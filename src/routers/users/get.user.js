@@ -1,7 +1,5 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 const {auth} = require("../../helpers/auth");
-const pool = require("../../lib/database");
 const {verifyToken} = require("../../lib/token");
 
 const getUserProfileController = async (req, res, next) => {

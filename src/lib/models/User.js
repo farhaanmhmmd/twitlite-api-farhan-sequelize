@@ -1,12 +1,12 @@
 const {DataTypes, Model} = require("sequelize");
-const sequelize = require("../config/database");
+const sequelize = require("../database/index.js");
 const Address = require("./Address");
 
 class User extends Model {}
 
 User.init(
   {
-    userId: {
+    user_id: {
       type: DataTypes.INTEGER, // int
       autoIncrement: true,
       primaryKey: true,
@@ -41,6 +41,22 @@ User.init(
       type: DataTypes.STRING(200), // varchar(100)
       allowNull: false, // not null
     },
+    // createdAt: {
+    //   type: DataTypes.DATE,
+    //   get() {
+    //     return moment(this.getDataValue("createdAt")).format(
+    //       "DD/MM/YYYY h:mm:ss"
+    //     );
+    //   },
+    // },
+    // updatedAt: {
+    //   type: DataTypes.DATE,
+    //   get() {
+    //     return moment(this.getDataValue("updatedAt")).format(
+    //       "DD/MM/YYYY h:mm:ss"
+    //     );
+    //   },
+    // },
   },
   {
     sequelize,
@@ -49,6 +65,6 @@ User.init(
   }
 );
 
-User.hasMany(Address, {foreignKey: "userId", as: "addresses"});
+User.hasMany(Address, {foreignKey: "user_id", as: "addresses"});
 
 module.exports = User;

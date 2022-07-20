@@ -4,7 +4,7 @@ const port = 2104;
 const bearerToken = require("express-bearer-token");
 const cors = require("cors");
 
-const userRouter = require("./routers/user");
+const userRouter = require("./routers/users");
 // const postRouter = require("./router/home")
 
 app.use(cors());

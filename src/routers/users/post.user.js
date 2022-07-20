@@ -1,10 +1,9 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 const {isFieldEmpties} = require("../../helpers");
-const pool = require("../../lib/database");
 const {hash, compare} = require("../../lib/bcryptjs");
 const {createToken} = require("../../lib/token");
 const {sendMail} = require("../../lib/nodemailer");
+const User = require("../../lib/models/User");
 
 const registerUserController = async (req, res, next) => {
   try {
@@ -20,11 +19,7 @@ const registerUserController = async (req, res, next) => {
       };
     }
 
-    const connection = pool.promise();
-
-    const sqlGetUser = `SELECT username, email FROM users WHERE username = ? OR email = ?`;
-    const dataGetUser = [username, email];
-    const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
+    const resGetUser = await User.findAll({username, email});
 
     if (resGetUser.length) {
       const user = resGetUser[0];
@@ -34,7 +29,7 @@ const registerUserController = async (req, res, next) => {
           code: 400,
           message: "Username is already exists",
         };
-      } else {
+      } else if (user.email == email) {
         throw {
           code: 400,
           message: "Email is already exists",
@@ -44,20 +39,12 @@ const registerUserController = async (req, res, next) => {
 
     const encryptedPassword = hash(password);
 
-    const sqlCreateUser = `INSERT INTO user SET ?`;
-    const dataCreateUser = [
-      {
-        username,
-        email,
-        image: "/public/avatar/default-profile-icon.png",
-        password: encryptedPassword,
-      },
-    ];
-
-    const [resCreateUser] = await connection.query(
-      sqlCreateUser,
-      dataCreateUser
-    );
+    const resCreateUser = await User.create({
+      username,
+      email,
+      password: encryptedPassword,
+      image: "/public/avatar/default-profile-icon.png",
+    });
 
     const token = createToken({user_id: resCreateUser.insertId});
 
