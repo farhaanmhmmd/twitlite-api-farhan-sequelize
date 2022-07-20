@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
 
     const connection = pool.promise();
 
-    const sqlGetUser = `SELECT user_id, username FROM user WHERE user_id = ?`;
+    const sqlGetUser = `SELECT user_id, username FROM users WHERE user_id = ?`;
     const dataGetUser = [verifiedToken.user_id];
     const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
 

@@ -29,7 +29,7 @@ const updateUserController = async (req, res, next) => {
 
     const connection = pool.promise();
 
-    const sqlGetUsername = `SELECT username FROM user WHERE username = ?`;
+    const sqlGetUsername = `SELECT username FROM users WHERE username = ?`;
     const dataGetUsername = [username];
     const [resGetUsername] = await connection.query(
       sqlGetUsername,
@@ -41,7 +41,7 @@ const updateUserController = async (req, res, next) => {
 
     // if (age >= 100) throw {code: 401, message: "Age is invalid"};
 
-    const sqlUpdateUser = `UPDATE user SET ? WHERE user_id = ?`;
+    const sqlUpdateUser = `UPDATE users SET ? WHERE user_id = ?`;
     const dataUpdateUser = [
       {
         username,

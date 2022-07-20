@@ -22,7 +22,7 @@ const registerUserController = async (req, res, next) => {
 
     const connection = pool.promise();
 
-    const sqlGetUser = `SELECT username, email FROM user WHERE username = ? OR email = ?`;
+    const sqlGetUser = `SELECT username, email FROM users WHERE username = ? OR email = ?`;
     const dataGetUser = [username, email];
     const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
 
@@ -82,7 +82,7 @@ const loginUserController = async (req, res, next) => {
 
     const connection = pool.promise();
 
-    const sqlGetUser = `SELECT user_id, username, password, isVerified FROM user WHERE username = ? OR email = ?`;
+    const sqlGetUser = `SELECT user_id, username, password, isVerified FROM users WHERE username = ? OR email = ?`;
     const dataGetUser = [username, email];
     const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
 
