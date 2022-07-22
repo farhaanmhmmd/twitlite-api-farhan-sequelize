@@ -71,25 +71,17 @@ const loginUserController = async (req, res, next) => {
   try {
     const {username, email, password} = req.body;
 
-    const connection = pool.promise();
+    const resGetUser = await User.findAll({
+      attributes: ["username", "email", "password", "isVerified"],
+      where: {[Op.or]: {username, email}},
+    });
 
-    const sqlGetUser = `SELECT user_id, username, password, isVerified FROM users WHERE username = ? OR email = ?`;
-    const dataGetUser = [username, email];
-    const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
+    const user = resGetUser[0];
 
     if (!resGetUser.length) {
       throw {
         code: 404,
         message: `Cannot find account with this username or email`,
-      };
-    }
-
-    const user = resGetUser[0];
-
-    if (!user.isVerified) {
-      throw {
-        code: 403,
-        message: `You need to verify your account before you login. Check your email for your account verification`,
       };
     }
 
@@ -99,6 +91,13 @@ const loginUserController = async (req, res, next) => {
       throw {
         code: 401,
         message: `Password is incorrect`,
+      };
+    }
+
+    if (!user.isVerified) {
+      throw {
+        code: 403,
+        message: `You need to verify your account before you login. Check your email for your account verification`,
       };
     }
 
