@@ -4,6 +4,7 @@ const {hash, compare} = require("../../lib/bcryptjs");
 const {createToken} = require("../../lib/token");
 const {sendMail} = require("../../lib/nodemailer");
 const User = require("../../lib/models/User");
+const {Op} = require("sequelize");
 
 const registerUserController = async (req, res, next) => {
   try {
@@ -19,7 +20,10 @@ const registerUserController = async (req, res, next) => {
       };
     }
 
-    const resGetUser = await User.findAll({username, email});
+    const resGetUser = await User.findAll({
+      attributes: ["username", "email"],
+      where: {[Op.or]: {username, email}},
+    });
 
     if (resGetUser.length) {
       const user = resGetUser[0];

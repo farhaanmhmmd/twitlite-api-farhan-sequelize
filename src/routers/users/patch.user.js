@@ -7,7 +7,8 @@ const {uploadAvatar} = require("../../lib/multer");
 
 const updateUserController = async (req, res, next) => {
   try {
-    const {user_id} = req.user;
+    // tadinya const {user_id} = req.user;
+    const {user_id} = req.params;
     const {username, firstName, lastName, age, gender} = req.body;
 
     const emptyFields = isFieldEmpties({
@@ -41,8 +42,7 @@ const updateUserController = async (req, res, next) => {
 
     // if (age >= 100) throw {code: 401, message: "Age is invalid"};
 
-    const sqlUpdateUser = `UPDATE users SET ? WHERE user_id = ?`;
-    const dataUpdateUser = [
+    const resUpdateUser = await User.update(
       {
         username,
         first_name: firstName,
@@ -50,15 +50,31 @@ const updateUserController = async (req, res, next) => {
         age,
         gender,
       },
-      user_id,
-    ];
-
-    const [resUpdateUSer] = await connection.query(
-      sqlUpdateUser,
-      dataUpdateUser
+      {
+        where: {
+          user_id,
+        },
+      }
     );
 
-    if (!resUpdateUSer.affectedRows) throw {message: "Failed to update user"};
+    // const sqlUpdateUser = `UPDATE users SET ? WHERE user_id = ?`;
+    // const dataUpdateUser = [
+    //   {
+    //     username,
+    //     first_name: firstName,
+    //     last_name: lastName,
+    //     age,
+    //     gender,
+    //   },
+    //   user_id,
+    // ];
+
+    // const [resUpdateUSer] = await connection.query(
+    //   sqlUpdateUser,
+    //   dataUpdateUser
+    // );
+
+    if (!resUpdateUser.affectedRows) throw {message: "Failed to update user"};
 
     res.send({
       status: "Success",
@@ -95,7 +111,8 @@ const updateUserAvatarController = async (req, res, next) => {
   }
 };
 
-router.patch("/", auth, updateUserController);
+// router.patch("/", auth, updateUserController)
+router.patch("/:user_id", auth, updateUserController);
 router.patch(
   "/avatar",
   auth,
