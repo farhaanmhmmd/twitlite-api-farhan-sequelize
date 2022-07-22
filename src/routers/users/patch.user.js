@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 const {isFieldEmpties} = require("../../helpers");
 const {auth} = require("../../helpers/auth");
-const pool = require("../../lib/database");
 const {uploadAvatar} = require("../../lib/multer");
+const User = require("../../lib/models/User");
 
 const updateUserController = async (req, res, next) => {
   try {
-    // tadinya const {user_id} = req.user;
-    const {user_id} = req.params;
+    const {user_id} = req.user;
     const {username, firstName, lastName, age, gender} = req.body;
 
     const emptyFields = isFieldEmpties({
@@ -23,19 +22,14 @@ const updateUserController = async (req, res, next) => {
       throw {
         code: 400,
         message: "Username cannot be empty",
-        // message: `Empty fields :  ${emptyFields}`,
         data: {result: emptyFields},
       };
     }
 
-    const connection = pool.promise();
-
-    const sqlGetUsername = `SELECT username FROM users WHERE username = ?`;
-    const dataGetUsername = [username];
-    const [resGetUsername] = await connection.query(
-      sqlGetUsername,
-      dataGetUsername
-    );
+    const resGetUsername = await User.findAll({
+      attributes: ["username"],
+      where: {username},
+    });
 
     if (resGetUsername.length)
       throw {code: 401, message: "username is already used"};
@@ -51,30 +45,11 @@ const updateUserController = async (req, res, next) => {
         gender,
       },
       {
-        where: {
-          user_id,
-        },
+        where: {user_id},
       }
     );
 
-    // const sqlUpdateUser = `UPDATE users SET ? WHERE user_id = ?`;
-    // const dataUpdateUser = [
-    //   {
-    //     username,
-    //     first_name: firstName,
-    //     last_name: lastName,
-    //     age,
-    //     gender,
-    //   },
-    //   user_id,
-    // ];
-
-    // const [resUpdateUSer] = await connection.query(
-    //   sqlUpdateUser,
-    //   dataUpdateUser
-    // );
-
-    if (!resUpdateUser.affectedRows) throw {message: "Failed to update user"};
+    // if (!resUpdateUser.affectedRows) throw {message: "Failed to update user"};
 
     res.send({
       status: "Success",
@@ -89,18 +64,21 @@ const updateUserAvatarController = async (req, res, next) => {
   try {
     const {user_id} = req.user;
     const {filename} = req.file;
-    const connection = pool.promise();
-
     const finalFileName = `/public/avatar/${filename}`;
-    const sqlUpdateAvatar = `UPDATE user SET ? WHERE user_id = ?`;
-    const dataUpdateAvatar = [{image: finalFileName}, user_id];
-    const [resUpdateAvatar] = await connection.query(
-      sqlUpdateAvatar,
-      dataUpdateAvatar
+
+    const resUpdateAvatar = await User.update(
+      {
+        image: finalFileName,
+      },
+      {
+        where: {
+          user_id,
+        },
+      }
     );
 
-    if (!resUpdateAvatar.affectedRows)
-      throw {message: "Failed to update avatar"};
+    // if (!resUpdateAvatar.affectedRows)
+    //   throw {message: "Failed to update avatar"};
 
     res.send({
       status: "Success",
@@ -111,8 +89,7 @@ const updateUserAvatarController = async (req, res, next) => {
   }
 };
 
-// router.patch("/", auth, updateUserController)
-router.patch("/:user_id", auth, updateUserController);
+router.patch("/", auth, updateUserController);
 router.patch(
   "/avatar",
   auth,

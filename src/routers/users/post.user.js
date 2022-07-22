@@ -50,7 +50,7 @@ const registerUserController = async (req, res, next) => {
       image: "/public/avatar/default-profile-icon.png",
     });
 
-    const token = createToken({user_id: resCreateUser.insertId});
+    const token = createToken({user_id: resCreateUser.dataValues.user_id});
 
     await sendMail({email, token});
 

@@ -1,4 +1,4 @@
-const pool = require("../../lib/database");
+const User = require("../../lib/models/User");
 const {verifyToken} = require("../../lib/token");
 
 const auth = async (req, res, next) => {
@@ -7,11 +7,10 @@ const auth = async (req, res, next) => {
 
     const verifiedToken = verifyToken(token);
 
-    const connection = pool.promise();
-
-    const sqlGetUser = `SELECT user_id, username FROM users WHERE user_id = ?`;
-    const dataGetUser = [verifiedToken.user_id];
-    const [resGetUser] = await connection.query(sqlGetUser, dataGetUser);
+    const resGetUser = await User.findAll({
+      attributes: ["user_id", "username"],
+      where: verifiedToken.user_id,
+    });
 
     if (!resGetUser.length) throw {message: "User not found"};
 
