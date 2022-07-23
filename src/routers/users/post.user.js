@@ -56,11 +56,32 @@ const registerUserController = async (req, res, next) => {
 
     res.send({
       status: "Success",
-      message:
-        "Account was successfully created. Open your email to verify your account before you login.",
+      message: "Account was successfully created.",
       data: {
         result: resCreateUser,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const sendEmailVerification = async (req, res, next) => {
+  try {
+    const username = req.body.username;
+    const resGetUser = await User.findAll({
+      attributes: ["user_id", "username", "email"],
+      where: {username: username},
+    });
+
+    const token = createToken({user_id: resGetUser[0].user_id});
+    const email = resGetUser[0].email;
+
+    await sendMail({email, token});
+
+    res.send({
+      status: "Success",
+      message: "Verification email has been send",
     });
   } catch (error) {
     next(error);
@@ -94,12 +115,12 @@ const loginUserController = async (req, res, next) => {
       };
     }
 
-    if (!user.isVerified) {
-      throw {
-        code: 403,
-        message: `You need to verify your account before you login. Check your email for your account verification`,
-      };
-    }
+    // if (!user.isVerified) {
+    //   throw {
+    //     code: 403,
+    //     message: `You need to verify your account before you login. Check your email for your account verification`,
+    //   };
+    // }
 
     const token = createToken({
       user_id: user.user_id,
@@ -124,5 +145,6 @@ const loginUserController = async (req, res, next) => {
 
 router.post("/", registerUserController);
 router.post("/login", loginUserController);
+router.post("/email/send", sendEmailVerification);
 
 module.exports = router;

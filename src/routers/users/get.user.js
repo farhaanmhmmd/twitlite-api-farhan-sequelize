@@ -11,6 +11,7 @@ const getUserProfileController = async (req, res, next) => {
       attributes: [
         "user_id",
         "username",
+        "bio",
         "first_name",
         "last_name",
         "email",

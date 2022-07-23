@@ -16,6 +16,7 @@ User.init(
       allowNull: false, // not null
       unique: true,
     },
+    bio: DataTypes.STRING(2000),
     email: {
       type: DataTypes.STRING(50), // varchar(100)
       allowNull: false, // not null
@@ -38,25 +39,10 @@ User.init(
     age: DataTypes.INTEGER,
     gender: DataTypes.ENUM("M", "F"),
     password: {
-      type: DataTypes.STRING(200), // varchar(100)
-      allowNull: false, // not null
+      type: DataTypes.STRING(200),
+      allowNull: false,
     },
-    // createdAt: {
-    //   type: DataTypes.DATE,
-    //   get() {
-    //     return moment(this.getDataValue("createdAt")).format(
-    //       "DD/MM/YYYY h:mm:ss"
-    //     );
-    //   },
-    // },
-    // updatedAt: {
-    //   type: DataTypes.DATE,
-    //   get() {
-    //     return moment(this.getDataValue("updatedAt")).format(
-    //       "DD/MM/YYYY h:mm:ss"
-    //     );
-    //   },
-    // },
+    verifiedToken: DataTypes.STRING(100),
   },
   {
     sequelize,
