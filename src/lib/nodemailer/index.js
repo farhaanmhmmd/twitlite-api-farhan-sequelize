@@ -15,11 +15,12 @@ const courier = nodemailer.createTransport({
 });
 
 const sendMail = async ({email, token}) => {
+  const URI = `http://localhost:2104/users/verification/${token}`;
   const mail = {
     from: "Twitlite Registration Admin <farhanmhmmd96@gmail.com>",
     to: `${email}`,
     subject: "Twitlite Email Verification",
-    html: `<h1>Click this <a href="http://localhost:2104/users/verification/${token}">link</a> to verify your email</h1>`,
+    html: `<h1>Click this <a href="${URI}">${URI}</a> to verify your email</h1>`,
   };
 
   try {

@@ -1,17 +1,18 @@
 const router = require("express").Router();
 const {auth} = require("../../helpers/auth");
 const {verifyToken} = require("../../lib/token");
-const User = require("../../lib/models/User");
+const {users} = require("../../../models");
 
 const getUserProfileController = async (req, res, next) => {
   try {
-    const {user_id} = req.user;
+    const username = req.params.username;
 
-    const resGetUser = await User.findAll({
+    const resGetUser = await users.findAll({
       attributes: [
         "user_id",
         "username",
         "bio",
+        "isVerified",
         "first_name",
         "last_name",
         "email",
@@ -19,7 +20,7 @@ const getUserProfileController = async (req, res, next) => {
         "age",
         "image",
       ],
-      where: {user_id},
+      where: {username: username},
     });
 
     if (!resGetUser.length) throw {message: "User not found"};
@@ -40,7 +41,7 @@ const verifyUserController = async (req, res, next) => {
   try {
     const verifiedToken = verifyToken(req.params.token);
 
-    const resUpdateIsVerifiedStatus = await User.update(
+    const resUpdateIsVerifiedStatus = await users.update(
       {
         isVerified: 1,
       },
@@ -57,7 +58,7 @@ const verifyUserController = async (req, res, next) => {
   }
 };
 
-router.get("/profile", auth, getUserProfileController);
+router.get("/profile/:username", auth, getUserProfileController);
 router.get("/verification/:token", verifyUserController);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const router = express.Router();
 const {isFieldEmpties} = require("../../helpers");
 const {auth} = require("../../helpers/auth");
 const {uploadAvatar} = require("../../lib/multer");
-const User = require("../../lib/models/User");
+const {users} = require("../../../models");
 
 const updateUserController = async (req, res, next) => {
   try {
@@ -26,7 +26,7 @@ const updateUserController = async (req, res, next) => {
       };
     }
 
-    const resGetUsername = await User.findAll({
+    const resGetUsername = await users.findAll({
       attributes: ["username"],
       where: {username},
     });
@@ -36,7 +36,7 @@ const updateUserController = async (req, res, next) => {
 
     // if (age >= 100) throw {code: 401, message: "Age is invalid"};
 
-    const resUpdateUser = await User.update(
+    const resUpdateUser = await users.update(
       {
         username,
         bio,
@@ -67,7 +67,7 @@ const updateUserAvatarController = async (req, res, next) => {
     const {filename} = req.file;
     const finalFileName = `/public/avatar/${filename}`;
 
-    const resUpdateAvatar = await User.update(
+    const resUpdateAvatar = await users.update(
       {
         image: finalFileName,
       },

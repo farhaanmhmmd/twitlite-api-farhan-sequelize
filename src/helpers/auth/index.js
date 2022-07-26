@@ -1,4 +1,5 @@
-const User = require("../../lib/models/User");
+const {users} = require("../../../models");
+
 const {verifyToken} = require("../../lib/token");
 
 const auth = async (req, res, next) => {
@@ -7,7 +8,7 @@ const auth = async (req, res, next) => {
 
     const verifiedToken = verifyToken(token);
 
-    const resGetUser = await User.findAll({
+    const resGetUser = await users.findAll({
       attributes: ["user_id", "username"],
       where: verifiedToken.user_id,
     });

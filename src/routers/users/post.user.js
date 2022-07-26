@@ -3,7 +3,7 @@ const {isFieldEmpties} = require("../../helpers");
 const {hash, compare} = require("../../lib/bcryptjs");
 const {createToken} = require("../../lib/token");
 const {sendMail} = require("../../lib/nodemailer");
-const User = require("../../lib/models/User");
+const {users} = require("../../../models");
 const {Op} = require("sequelize");
 
 const registerUserController = async (req, res, next) => {
@@ -20,7 +20,7 @@ const registerUserController = async (req, res, next) => {
       };
     }
 
-    const resGetUser = await User.findAll({
+    const resGetUser = await users.findAll({
       attributes: ["username", "email"],
       where: {[Op.or]: {username, email}},
     });
@@ -43,7 +43,7 @@ const registerUserController = async (req, res, next) => {
 
     const encryptedPassword = hash(password);
 
-    const resCreateUser = await User.create({
+    const resCreateUser = await users.create({
       username,
       email,
       password: encryptedPassword,
@@ -69,7 +69,7 @@ const registerUserController = async (req, res, next) => {
 const sendEmailVerification = async (req, res, next) => {
   try {
     const username = req.body.username;
-    const resGetUser = await User.findAll({
+    const resGetUser = await users.findAll({
       attributes: ["user_id", "username", "email"],
       where: {username: username},
     });
@@ -92,7 +92,7 @@ const loginUserController = async (req, res, next) => {
   try {
     const {username, email, password} = req.body;
 
-    const resGetUser = await User.findAll({
+    const resGetUser = await users.findAll({
       attributes: ["username", "email", "password", "isVerified"],
       where: {[Op.or]: {username, email}},
     });
@@ -135,6 +135,7 @@ const loginUserController = async (req, res, next) => {
           user_id: user.user_id,
           username: user.username,
           accessToken: token,
+          isVerified: user.isVerified,
         },
       },
     });
