@@ -5,7 +5,7 @@ const {users} = require("../../../models");
 
 const getUserProfileController = async (req, res, next) => {
   try {
-    const username = req.params.username;
+    const user_id = req.params.user_id;
 
     const resGetUser = await users.findAll({
       attributes: [
@@ -20,7 +20,7 @@ const getUserProfileController = async (req, res, next) => {
         "age",
         "image",
       ],
-      where: {username: username},
+      where: {user_id: user_id},
     });
 
     if (!resGetUser.length) throw {message: "User not found"};
@@ -58,7 +58,7 @@ const verifyUserController = async (req, res, next) => {
   }
 };
 
-router.get("/profile/:username", auth, getUserProfileController);
+router.get("/profile/:user_id", auth, getUserProfileController);
 router.get("/verification/:token", verifyUserController);
 
 module.exports = router;

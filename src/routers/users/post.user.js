@@ -89,7 +89,7 @@ const loginUserController = async (req, res, next) => {
     const {username, email, password} = req.body;
 
     const resGetUser = await users.findAll({
-      attributes: ["username", "email", "password", "isVerified"],
+      attributes: ["user_id", "username", "email", "password", "isVerified"],
       where: {[Op.or]: {username, email}},
     });
 
