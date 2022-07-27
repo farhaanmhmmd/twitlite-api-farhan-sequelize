@@ -8,14 +8,10 @@ const {users} = require("../../../models");
 const updateUserController = async (req, res, next) => {
   try {
     const {user_id} = req.user;
-    const {username, bio, firstName, lastName, age, gender} = req.body;
+    const {username, bio, firstName, lastName, gender} = req.body;
 
     const emptyFields = isFieldEmpties({
       username,
-      // firstName,
-      // lastName,
-      // age,
-      // gender
     });
 
     if (emptyFields.length) {
@@ -34,15 +30,12 @@ const updateUserController = async (req, res, next) => {
     if (resGetUsername.length)
       throw {code: 401, message: "Username is already used"};
 
-    // if (age >= 100) throw {code: 401, message: "Age is invalid"};
-
     const resUpdateUser = await users.update(
       {
         username,
         bio,
         first_name: firstName,
         last_name: lastName,
-        age,
         gender,
       },
       {

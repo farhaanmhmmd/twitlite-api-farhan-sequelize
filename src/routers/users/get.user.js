@@ -17,7 +17,6 @@ const getUserProfileController = async (req, res, next) => {
         "last_name",
         "email",
         "gender",
-        "age",
         "image",
       ],
       where: {user_id: user_id},
