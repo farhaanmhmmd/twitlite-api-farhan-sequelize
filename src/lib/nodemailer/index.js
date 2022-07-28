@@ -20,7 +20,9 @@ const sendMail = async ({email, token}) => {
     from: "Twitlite Registration Admin <farhanmhmmd96@gmail.com>",
     to: `${email}`,
     subject: "Twitlite Email Verification",
-    html: `<h1>Click this <a href="${URI}">${URI}</a> to verify your email</h1>`,
+    html: `<h2>Welcome to Twitlite</h2>
+    <h3>Click on the link below to verify your email:</h3>
+    <h3><a href="${URI}">${URI}</a></h3>`,
   };
 
   try {
