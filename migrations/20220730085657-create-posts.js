@@ -15,6 +15,12 @@ module.exports = {
           key: "user_id",
         },
       },
+      username: {
+        type: Sequelize.STRING(20),
+        allowNull: false,
+        model: "users",
+        key: "username",
+      },
       caption: {
         type: Sequelize.STRING(100),
         allowNull: true,

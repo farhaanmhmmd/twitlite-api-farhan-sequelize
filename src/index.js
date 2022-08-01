@@ -4,10 +4,8 @@ const port = 2104;
 const bearerToken = require("express-bearer-token");
 const cors = require("cors");
 
-const userRouter = require("./routers/users");
-// const postsRouter = require("./router/posts");
-// const likesRouter = require("./router/likes");
-// const commentsRouter = require("./router/comments");
+const usersRouter = require("./routers/users");
+const postsRouter = require("./routers/posts");
 
 app.use(cors());
 app.use(bearerToken());
@@ -15,13 +13,11 @@ app.use("/public", express.static("public"));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("API JALAN MZ 🚀");
+  res.send("API is Secure");
 });
 
-app.use("/users", userRouter);
-// app.use("/posts", postsRouter);
-// app.use("/likes", likesRouter);
-// app.use("/comments", commentsRouter);
+app.use("/users", usersRouter);
+app.use("/posts", postsRouter);
 
 app.use((error, req, res, next) => {
   console.log({error});

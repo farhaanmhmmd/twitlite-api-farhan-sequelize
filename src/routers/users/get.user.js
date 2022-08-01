@@ -109,11 +109,3 @@ router.get("/profile/:user_id", auth, getUserProfileController);
 router.get("/verification/:token", verifyUserController);
 
 module.exports = router;
-
-{
-  /* <p> 
-<a href="http://localhost:3000/profile" target="_blank"
-    >Back to Twitlite
-    </a>
-    </p> */
-}

@@ -111,13 +111,6 @@ const loginUserController = async (req, res, next) => {
       };
     }
 
-    // if (!user.isVerified) {
-    //   throw {
-    //     code: 403,
-    //     message: `You need to verify your account before you login. Check your email for your account verification`,
-    //   };
-    // }
-
     const token = createToken({
       user_id: user.user_id,
       username: user.username,

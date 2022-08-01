@@ -12,6 +12,7 @@ module.exports = {
         type: Sequelize.STRING(20),
         allowNull: false,
         unique: true,
+        primaryKey: true,
       },
       bio: Sequelize.STRING(2000),
       email: {
