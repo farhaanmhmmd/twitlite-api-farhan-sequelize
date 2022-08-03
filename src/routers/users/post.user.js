@@ -50,9 +50,14 @@ const registerUserController = async (req, res, next) => {
       image: "/public/avatar/default-profile-icon.png",
     });
 
+    const token = createToken({user_id: resCreateUser.insertId});
+
+    await sendMail({email, token});
+
     res.send({
       status: "Success",
-      message: "Account was successfully created.",
+      message:
+        "Account was successfully created. Check your email for your account verification",
       data: {
         result: resCreateUser,
       },
