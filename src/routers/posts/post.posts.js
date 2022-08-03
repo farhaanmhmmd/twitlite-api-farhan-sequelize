@@ -4,19 +4,18 @@ const {auth} = require("../../helpers/auth");
 const {posts} = require("../../../models");
 const {uploadPosts} = require("../../lib/multer");
 
-const newUserPosts = async (req, res, next) => {
+const createUserPost = async (req, res, next) => {
   try {
-    const postCount = req.userPost.length;
     const {user_id} = req.params;
-    const currentDate = new Date();
-    const postId_maker = currentDate.getTime();
     const {username} = req.user;
+    const postNumber = req.userPost.length;
+    const postTime = new Date().getTime();
 
     const resCreateUserPost = await posts.create({
       user_id,
       username,
-      post_id: `${username}-${postId_maker}`,
-      postImage: `/public/allPosts/${username}-${postCount}.png`,
+      post_id: `${username}-${postTime}`,
+      postImage: `/public/allPosts/${username}-${postNumber}.png`,
       caption: req.body.caption,
     });
 
@@ -33,12 +32,30 @@ const newUserPosts = async (req, res, next) => {
     next(error);
   }
 };
+const getDetailPost = async (req, res, next) => {
+  try {
+    const {post_id} = req.params;
+
+    const resGetUserPosts = await posts.findAll({
+      where: {post_id},
+    });
+
+    res.send({
+      status: "Success",
+      message: "Get post detail",
+      detail: resGetUserPosts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 router.post(
-  "/newPosts/:user_id",
+  "/createPost/:user_id",
   auth,
-  uploadPosts.single("newPosts"),
-  newUserPosts
+  uploadPosts.single("createPost"),
+  createUserPost
 );
+router.post("/:post_id", getDetailPost);
 
 module.exports = router;

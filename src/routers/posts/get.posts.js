@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const {auth} = require("../../helpers/auth");
 const {posts} = require("../../../models");
 const {likes} = require("../../../models");
 
@@ -36,6 +35,36 @@ const getAllPost = async (req, res, next) => {
   }
 };
 
+const getPostDetail = async (req, res, next) => {
+  try {
+    const postId = req.params.post_id;
+
+    const resGetDetailPost = await posts.findOne({
+      attributes: [
+        "post_id",
+        "user_id",
+        "username",
+        "caption",
+        "postImage",
+        "createdAt",
+      ],
+      where: {post_id: postId},
+      raw: true,
+    });
+
+    res.send({
+      status: "Success",
+      message: "Get detail post",
+      data: {
+        detail: resGetDetailPost,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.get("/", getAllPost);
+router.get("/:post_id", getPostDetail);
 
 module.exports = router;
