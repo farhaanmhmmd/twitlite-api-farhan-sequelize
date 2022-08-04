@@ -40,17 +40,12 @@ const getPostDetail = async (req, res, next) => {
     const postId = req.params.post_id;
 
     const resGetDetailPost = await posts.findOne({
-      attributes: [
-        "post_id",
-        "user_id",
-        "username",
-        "caption",
-        "postImage",
-        "createdAt",
-      ],
       where: {post_id: postId},
+      include: [{model: likes, as: "postLikes"}],
       raw: true,
     });
+
+    resGetDetailPost["likes"] = resGetDetailPost["postLikes.likePost"];
 
     res.send({
       status: "Success",

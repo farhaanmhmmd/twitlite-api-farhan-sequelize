@@ -8,17 +8,6 @@ const getUserProfileController = async (req, res, next) => {
     const user_id = req.params.user_id;
 
     const resGetUser = await users.findAll({
-      attributes: [
-        "user_id",
-        "username",
-        "bio",
-        "isVerified",
-        "first_name",
-        "last_name",
-        "email",
-        "gender",
-        "image",
-      ],
       where: {user_id: user_id},
     });
 
@@ -38,16 +27,26 @@ const getUserProfileController = async (req, res, next) => {
 
 const verifyUserController = async (req, res, next) => {
   try {
+    const rawToken = req.params.token;
     const verifiedToken = verifyToken(req.params.token);
 
-    const resUpdateIsVerifiedStatus = await users.update(
-      {
-        isVerified: 1,
-      },
-      {
-        where: {user_id: verifiedToken.user_id},
+    const resGetUser = await users.findAll({
+      where: {user_id: verifiedToken.user_id},
+    });
+    if (resGetUser.length != 0) {
+      if (resGetUser[0].verifiedToken == rawToken) {
+        const resUpdateIsVerifiedStatus = await users.update(
+          {
+            isVerified: 1,
+          },
+          {
+            where: {user_id: verifiedToken.user_id},
+          }
+        );
+      } else {
+        res.send("Token Expired");
       }
-    );
+    }
 
     // if (!resUpdateIsVerifiedStatus.affectedRows)
     //   throw {message: "Failed verification user"};

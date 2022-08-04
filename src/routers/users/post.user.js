@@ -78,6 +78,11 @@ const sendEmailVerification = async (req, res, next) => {
     const token = createToken({user_id: resGetUser[0].user_id});
     const email = resGetUser[0].email;
 
+    const resUpdateUserTOken = await users.update(
+      {verifiedToken: token},
+      {raw: true, where: {username: username}}
+    );
+
     await sendMail({email, token});
 
     res.send({

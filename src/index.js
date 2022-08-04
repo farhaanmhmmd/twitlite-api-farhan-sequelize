@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const usersRouter = require("./routers/users");
 const postsRouter = require("./routers/posts");
+const likesRouter = require("./routers/likes");
 
 app.use(cors());
 app.use(bearerToken());
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
+app.use("/likes", likesRouter);
 
 app.use((error, req, res, next) => {
   console.log({error});
