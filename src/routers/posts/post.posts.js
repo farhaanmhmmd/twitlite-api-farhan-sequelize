@@ -19,11 +19,8 @@ const createUserPost = async (req, res, next) => {
       caption: req.body.caption,
     });
 
-    console.dir(resCreateUserPost);
-
     res.send({
       status: "Success",
-      message: "New user post",
       detail: {
         resCreateUserPost,
       },

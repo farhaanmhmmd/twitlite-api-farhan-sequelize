@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {posts} = require("../../../models");
-const {likes} = require("../../../models");
+const {posts, likes, comments} = require("../../../models");
 
 const getAllPost = async (req, res, next) => {
   try {
@@ -44,6 +43,19 @@ const getPostDetail = async (req, res, next) => {
       include: [{model: likes, as: "postLikes"}],
       raw: true,
     });
+
+    if (resGetDetailPost) {
+      let commentPosts = [];
+      const resGetCommentPost = await comments.findAll({
+        where: {post_id: postId},
+        raw: true,
+      });
+
+      if (resGetCommentPost.length > 0) {
+        commentPosts = resGetCommentPost;
+      }
+      resGetDetailPost["comments"] = commentPosts;
+    }
 
     resGetDetailPost["likes"] = resGetDetailPost["postLikes.likePost"];
 

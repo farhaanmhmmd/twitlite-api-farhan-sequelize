@@ -20,11 +20,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   comments.init(
     {
-      comment_id: {
-        allowNull: false,
-        primaryKey: true,
-        type: DataTypes.STRING,
-      },
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -40,10 +35,6 @@ module.exports = (sequelize, DataTypes) => {
           model: "posts",
           key: "post_id",
         },
-      },
-      username: {
-        type: DataTypes.STRING,
-        allowNull: false,
       },
       commentPost: {
         type: DataTypes.STRING(200),
